@@ -1694,6 +1694,10 @@ class AggregatingVariable(variables_lib.Variable):
     return self._v.value
 
   @property
+  def synchronization(self):
+    return self._v.synchronization
+
+  @property
   def aggregation(self):
     return self._aggregation
 

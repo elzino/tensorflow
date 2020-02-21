@@ -234,8 +234,8 @@ class HybridStrategyExtended(distribute_lib.StrategyExtendedV1):
         dataset,
         self._input_workers,
         self._container_strategy(),
-        split_batch_by=self._num_replicas_in_sync,)
-        # input_context=input_context)
+        split_batch_by=self._num_replicas_in_sync,
+        input_context=input_context)
 
   def _make_dataset_iterator(self, dataset):
     input_context = self._make_input_context()
@@ -243,8 +243,8 @@ class HybridStrategyExtended(distribute_lib.StrategyExtendedV1):
         dataset,
         self._input_workers,
         self._container_strategy(),
-        split_batch_by=self._num_replicas_in_sync,)
-        # input_context=input_context)
+        split_batch_by=self._num_replicas_in_sync,
+        input_context=input_context)
 
   def _make_input_fn_iterator(
       self,
@@ -473,9 +473,6 @@ class HybridStrategyExtended(distribute_lib.StrategyExtendedV1):
 
   def _reduce_to(self, reduce_op, value, destinations):
     self._verify_destinations_not_different_worker(destinations)
-    if isinstance(destinations, str):
-      return self._ps_cross_device_ops.reduce( reduce_op, value, destinations=destinations)
-      
     if isinstance(destinations, values.AggregatingVariable):
       return self._ps_cross_device_ops.reduce(
         reduce_op, value, destinations=destinations)
@@ -712,7 +709,7 @@ class HybridStrategyExtended(distribute_lib.StrategyExtendedV1):
 
   @property
   def _num_replicas_in_sync(self):
-    return self._device_map.num_replicas_in_graph
+    return self._device_map.num_replicas_in_graph * self._num_workers
 
   @property
   def worker_devices(self):
