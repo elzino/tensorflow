@@ -524,7 +524,6 @@ class HybridStrategyExtended(distribute_lib.StrategyExtendedV1):
       results_with_ps_cross_device = self._ps_cross_device_ops.batch_reduce(reduce_op, v_d_pairs_with_ps_cross_device)
       for value, index in zip(results_with_ps_cross_device, indices_with_ps_cross_device):
         results[index] = value
-    print('results : ', results)
     return results
 
   def _select_single_value(self, structured):
