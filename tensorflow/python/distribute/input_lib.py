@@ -534,15 +534,10 @@ class DistributedDataset(_IterableInput):
     if input_context:
       # Between-graph where we rely on the input_context for sharding
       assert input_workers.num_workers == 1
-      worker = input_workers.worker_devices[0]
-      cloned_dataset = distribute.replicate(dataset,
-                                            input_workers.worker_devices)[worker]
-      with ops.device(worker):
-        cloned_dataset = cloned_dataset.with_options(dataset.options())
-        cloned_dataset = input_ops.auto_shard_dataset(cloned_dataset,
-                                               input_context.num_input_pipelines,
-                                               input_context.input_pipeline_id)
-        self._cloned_datasets.append(cloned_dataset)
+      dataset = input_ops.auto_shard_dataset(dataset,
+                                             input_context.num_input_pipelines,
+                                             input_context.input_pipeline_id)
+      self._cloned_datasets.append(dataset)
     else:
       replicated_ds = distribute.replicate(dataset,
                                            input_workers.worker_devices)
